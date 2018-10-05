@@ -1,0 +1,64 @@
+# $Id$
+
+%define name vpnct
+%define version @VERSION@
+%define release 1mdk
+
+Summary: The VPNCT project is a solution for automatic configuration of VPNs.
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Source: http://github.com/drmanx/vpnct/%{name}-%{version}.tar.gz
+Group: Applications/System
+License: GPL
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Prereq: /sbin/ldconfig
+
+%description
+The VPNCT project is a solution for automatic configuration of VPNs.
+
+%prep
+%setup -q
+
+%build
+%configure
+%make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{_prefix}
+
+
+# Will this overide previous config file?
+mkdir -p $RPM_BUILD_ROOT/etc
+cp vpnct.conf $RPM_BUILD_ROOT/etc
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp scripts/init.d/vpnct $RPM_BUILD_ROOT/etc/rc.d/init.d
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/vpnct
+
+%makeinstall
+
+%post
+/sbin/ldconfig
+%_post_service vpnct
+
+%postun
+/sbin/ldconfig
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,0755)
+%doc AUTHORS COPYING ChangeLog INSTALL NEWS README FAQ doc/html
+%config /etc/vpnct.conf 
+%config /etc/rc.d/init.d/vpnct
+%{_bindir}/*
+%{_libdir}/*.a
+%{_libdir}/*.la
+%{_libdir}/*.so*
+%{_includedir}/*
+
+%changelog
+

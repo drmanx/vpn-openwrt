@@ -1,0 +1,54 @@
+#!/bin/sh
+
+VP_DIR=/usr/bin
+OPTIONS=""
+
+case "$1" in
+  start)
+	echo "Starting VPNCT ... "
+    if $VP_DIR/vpnct status 2> /dev/null
+	then
+	echo "FAILED:  VPNCT already running"
+	if $VP_DIR/vpnct $OPTIONS
+	then
+		echo "OK"
+	else
+		echo "FAILED:  VPNCT exited with non 0 status"
+	fi
+    fi
+    ;;
+  restart)
+    $0 stop
+    sleep 2
+    $0 start
+    ;;
+  reload)
+    $0 stop
+    sleep 2
+    $0 start
+    ;;
+  stop)
+    echo "Stopping VPNCT ... "
+    if $VP_DIR/vpnct status 2> /dev/null
+    then
+       	if $VP_DIR/vpnct stop
+	then
+		echo "OK"
+	else
+		echo "FAILED:  vpnct stop exited with non 0 status"
+	fi
+       
+    else
+       echo "FAILED:  vpnct was not running"
+    fi
+    ;;
+  status)
+    $VP_DIR/vpct status
+    ;;
+  *)
+   echo "Usage: $0 {start|stop|restart|reload|status}"
+   exit 1
+   ;;
+esac
+
+
