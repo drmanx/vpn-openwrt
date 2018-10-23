@@ -1,0 +1,53 @@
+## -*-m4-*-
+# $Id$
+
+dnl Process this file with autoconf to produce a configure script.
+
+# FILE:
+# configure.in
+#
+# FUNCTION:
+# implements checks for a variety of system-specific functions
+
+AC_INIT(src/common.h)
+AM_CONFIG_HEADER(config.h)
+AC_CONFIG_AUX_DIR(config)
+AC_PROG_CC
+AC_PROG_CXX
+
+AC_SUBST(BUILDROOT)
+
+VPNCT_MAJOR_VERSION=1
+VPNCT_MINOR_VERSION=3
+VPNCT_MICRO_VERSION=0
+VPNCT_VERSION=$VPNCT_MAJOR_VERSION.$VPNCT_MINOR_VERSION.$VPNCT_MICRO_VERSION
+
+AC_SUBST(VPNCT_MAJOR_VERSION)
+AC_SUBST(VPNCT_MINOR_VERSION)
+AC_SUBST(VPNCT_MICRO_VERSION)
+AC_SUBST(VPNCT_VERSION)
+AM_INIT_AUTOMAKE(VPNCT,$VPNCT_VERSION)
+
+
+AM_MAINTAINER_MODE
+
+AC_PROG_INSTALL
+
+AC_LIBTOOL_DLOPEN
+AM_PROG_LIBTOOL
+
+AC_ISC_POSIX
+AC_C_BIGENDIAN
+AC_PROG_MAKE_SET
+AC_HEADER_STDC
+
+# check for pthread
+AC_CHECK_HEADER(pthread.h, , AC_MSG_ERROR(You need the pthread headers) )
+AC_CHECK_LIB(pthread, pthread_create, , AC_MSG_ERROR(You need the pthread library) )
+
+AC_OUTPUT( 		Makefile 
+	   		VPNCT.spec
+			VPNCT-msg.html
+			src/Makefile
+			)
+
